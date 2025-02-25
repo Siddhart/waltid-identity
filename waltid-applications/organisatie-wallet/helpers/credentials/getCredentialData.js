@@ -1,12 +1,13 @@
 import Cookies from "universal-cookie";
 
-async function getCredentials() {
+async function getCredentialData(id) {
     let cookies = new Cookies()
     let { token } = cookies.get("session")
-
+    console.log(id);
+    
 
     try {
-        const response = await fetch('http://localhost:7101/wallet-api/wallet/7999978a-eff4-4eed-9771-c2b57495c3e9/credentials?showDeleted=false&showPending=false', {
+        const response = await fetch('http://localhost:7101/wallet-api/wallet/7999978a-eff4-4eed-9771-c2b57495c3e9/credentials/' + id, {
             method: 'GET',
             headers: {
                 'Accept': '*/*',
@@ -14,7 +15,7 @@ async function getCredentials() {
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
                 'Pragma': 'no-cache',
-                'Referer': 'http://localhost:7101/wallet-api/wallet/7999978a-eff4-4eed-9771-c2b57495c3e9/credentials?showDeleted=false&showPending=false',
+                'Referer': 'http://localhost:7101/wallet-api/wallet/7999978a-eff4-4eed-9771-c2b57495c3e9/credentials/',
                 'Sec-Fetch-Dest': 'empty',
                 'Sec-Fetch-Mode': 'cors',
                 'Authorization': `Bearer ${token}`,
@@ -33,4 +34,4 @@ async function getCredentials() {
     }
 }
 
-export default getCredentials;
+export default getCredentialData;

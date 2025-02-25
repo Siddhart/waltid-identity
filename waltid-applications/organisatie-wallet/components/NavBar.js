@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import QRCode from 'react-qr-code'
 
 const NavBar = () => {
-    const [isHovering, setIsHovering] = useState(true)
+    const [isHovering, setIsHovering] = useState(false)
     const [hoverTimer, setHoverTimer] = useState(null)
 
     const parent = useRef(null)
@@ -26,7 +26,7 @@ const NavBar = () => {
 
 
     const handleMouseEnter = () => {
-        setHoverTimer(setTimeout(() => setIsHovering(true), 500))
+        setHoverTimer(setTimeout(() => setIsHovering(true), 1000))
     }
 
     const handleMouseLeave = () => {
@@ -53,7 +53,7 @@ const NavBar = () => {
                     </div>
                     <div className='absolute left-20  mt-1 flex flex-col text-[#383EDE]'>
                         <p className='font-semibold z-10 whitespace-nowrap'>NL wallet</p>
-                        <p className=' z-10 whitespace-nowrap font-bold text-xs -mt-1'>Business</p>
+                        <p className=' z-10 whitespace-nowrap font-black text-xs -mt-1'>Business</p>
                     </div>
                 </div>
                 {/* </div> */}
