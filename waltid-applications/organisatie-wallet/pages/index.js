@@ -1,5 +1,7 @@
-import PageMessage from '@/components/PageMessage'
 import React from 'react'
+
+//components
+import PageMessage from '@/components/global/PageMessage'
 
 const Dashboard = () => {
     return (

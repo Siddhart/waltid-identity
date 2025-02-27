@@ -1,6 +1,10 @@
+import React, { useEffect, useRef, useState } from 'react'
+
+//assets
 import ChevronDown from '@/assets/icons/ChevronDown'
 import ChevronUp from '@/assets/icons/ChevronUp'
-import React, { useEffect, useRef, useState } from 'react'
+
+//packages
 import autoAnimate from '@formkit/auto-animate'
 
 const PageMessage = ({ title, message }) => {

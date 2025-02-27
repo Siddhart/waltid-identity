@@ -1,8 +1,11 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+
+//components
+import NavBar from "./navbar/NavBar";
+
+//packages
 import Cookies from 'universal-cookie';
-import LogoSvg from "@/assets/logo";
-import NavBar from "./NavBar";
 
 export default function Layout({ children }) {
     const router = useRouter();
@@ -19,33 +22,16 @@ export default function Layout({ children }) {
             const session = cookies.get("session");
             if (session && router.asPath.includes("/auth")) {
                 window.location.href = "/";
-            }
-        };
-
-        const interval = setInterval(checkSession, 500);
-
-        return () => clearInterval(interval);
-    }, [router, router.isReady]);
-
-    useEffect(() => {
-        const handleCookieChange = () => {
-            const session = cookies.get("session");
-            if (!session && !router.asPath.includes("/auth")) {
+            } else if (!session && !router.asPath.includes("/auth")) {
                 router.push("/auth/login");
             }
         };
 
-        // Initial check on mount
-        handleCookieChange();
+        checkSession();
+        const interval = setInterval(checkSession, 500);
 
-        // Listen for cookie changes
-        cookies.addChangeListener(handleCookieChange);
-
-        // Cleanup listener on unmount
-        // return () => {
-        //     cookies.removeChangeListener(handleCookieChange);
-        // };
-    }, [router]);
+        return () => clearInterval(interval);
+    }, [router, router.isReady]);
 
     if (isAuthPath) {
         return <main>{children}</main>;

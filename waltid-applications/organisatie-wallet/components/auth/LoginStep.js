@@ -1,12 +1,15 @@
+import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+
+//assets
 import CardsSvg from '@/assets/cardsSvg'
 import AndroidSvg from '@/assets/download/androidSvg'
 import IosSvg from '@/assets/download/iosSvg'
 import RightArrowSvg from '@/assets/icons/rightArrowSvg'
 import LogoSvg from '@/assets/logo'
 import OverheidSvg from '@/assets/overheidSvg'
-import React, { useState } from 'react'
-import QRCode from 'react-qr-code'
-import { useRouter } from 'next/router'
+
+//packages
 import Cookies from 'universal-cookie'
 
 const LoginStep = ({ setStep }) => {

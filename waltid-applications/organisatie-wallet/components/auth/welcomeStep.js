@@ -1,10 +1,12 @@
+import React from 'react'
+
+//assets
 import CardsSvg from '@/assets/cardsSvg'
 import AndroidSvg from '@/assets/download/androidSvg'
 import IosSvg from '@/assets/download/iosSvg'
 import RightArrowSvg from '@/assets/icons/rightArrowSvg'
 import LogoSvg from '@/assets/logo'
 import OverheidSvg from '@/assets/overheidSvg'
-import React from 'react'
 
 const WelcomeStep = ({ setStep }) => {
     return (
