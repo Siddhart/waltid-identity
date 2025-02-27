@@ -5,6 +5,7 @@ import getCredentials from '@/helpers/credentials/getCredentials'
 import React, { useEffect, useRef, useState } from 'react'
 import autoAnimate from '@formkit/auto-animate'
 import Link from 'next/link'
+import SearchSvg from '@/assets/icons/SearchSvg'
 
 const CardsOverview = () => {
     const [cards, setCards] = useState([])
@@ -31,7 +32,20 @@ const CardsOverview = () => {
         <div className='w-full '>
             <PageMessage title="Mijn Organisatie Credentials" message="Op deze pagina vindt je alle credentials die zijn uitgegevens voor uw organisatie, klik op de kaartjes van de credentials voor meer informatie." />
 
-            <div className='grid grid-cols-4 gap-8 mt-16'>
+
+            <div className='mt-12 flex flex-row justify-between items-center'>
+                <div>
+                    <p className='text-3xl font-bold '>Mijn Credentials ({cards?.length})</p>
+                </div>
+
+                <div className='flex items-center justify-end gap-4'>
+                    <input className='border-b-[1px] border-black px-3 focus:outline-none' placeholder='Zoeken...' />
+                    <button className='w-10 h-10 rounded-md bg-[#383EDE] flex items-center justify-center'>
+                        <SearchSvg />
+                    </button>
+                </div>
+            </div>
+            <div className='grid grid-cols-4 gap-8 mt-6'>
                 <Link href='/' className='hover:scale-[1.01] duration-100 relative w-full aspect-video rounded-2xl p-6 border-dashed border-4 border-[#383EDE] flex flex-col items-center justify-center'>
                     <PlusSvg />
                     <p className='font-bold text-lg text-[#383EDE]'>Credentials Toevoegen</p>

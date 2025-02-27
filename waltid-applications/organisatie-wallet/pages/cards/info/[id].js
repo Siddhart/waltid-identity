@@ -36,9 +36,9 @@ const CardInfo = () => {
 
   return (
     <div className='relative w-full flex flex-row gap-6 overflow-hidden'>
-      <div className='flex flex-col h-screen flex-1 max-w-[350px] rounded-t-2xl bg-[#F5F4F9]'>
+      <div className='flex flex-col h-screen flex-1 max-w-[350px] rounded-t-md bg-[#F5F4F9]'>
         <div className='sticky top-0'>
-          <div className=' max-w-[350px] bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-2xl'>
+          <div className=' max-w-[350px] bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-md'>
             <p>Kaartgegevens</p>
           </div>
           <div className='p-4 w-full'>
@@ -76,8 +76,8 @@ const CardInfo = () => {
       </div>
 
       <div className='flex flex-1 flex-col justify-between w-full h-full gap-6'>
-      <div className='w-full h-36 bg-[#F5F4F9] rounded-2xl'>
-          <div className='w-full h-16 bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-2xl'>
+      <div className='w-full h-36 bg-[#F5F4F9] rounded-md'>
+          <div className='w-full h-16 bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-md'>
             <p>Toegang Wijzigen</p>
           </div>
 
@@ -89,11 +89,11 @@ const CardInfo = () => {
           </div>
         </div>
         <div className='flex flex-col flex-1 w-full h-full '>
-          <div className='w-full h-fit bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-2xl'>
+          <div className='w-full h-fit bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-md'>
             <p>Recente Activiteiten</p>
           </div>
 
-          <div className='flex flex-col gap-6 p-4 w-full bg-[#F5F4F9] rounded-b-2xl overflow-scroll h-[60vh]'>
+          <div className='flex flex-col gap-6 p-4 w-full bg-[#F5F4F9] rounded-b-md overflow-scroll h-[60vh]'>
             <DayBlock />
             <DayBlock />
           </div>
@@ -109,8 +109,13 @@ export default CardInfo
 
 
 const KeyValue = ({ title, value }) => {
+  const formattedTitle = title.replace(/([A-Z])/g, (match, p1) => {
+    const prevChar = title.charAt(title.indexOf(match) - 1);
+    return prevChar === prevChar.toLowerCase() ? ` ${p1}` : p1;
+  }).trim();
+  
   return <div className='flex flex-col break-all'>
-    <p className='text-sm break-all capitalize'>{title}</p>
+    <p className='text-sm break-all capitalize'>{formattedTitle}</p>
     <p className='text-base font-bold'>{value}</p>
   </div>
 }
