@@ -32,7 +32,7 @@ const CardsOverview = () => {
             <PageMessage title="Mijn Organisatie Credentials" message="Op deze pagina vindt je alle credentials die zijn uitgegevens voor uw organisatie, klik op de kaartjes van de credentials voor meer informatie." />
 
             <div className='grid grid-cols-4 gap-8 mt-16'>
-                <Link href='/' className='relative w-full aspect-video rounded-2xl p-6 border-dashed border-4 border-[#383EDE] flex flex-col items-center justify-center'>
+                <Link href='/' className='hover:scale-[1.01] duration-100 relative w-full aspect-video rounded-2xl p-6 border-dashed border-4 border-[#383EDE] flex flex-col items-center justify-center'>
                     <PlusSvg />
                     <p className='font-bold text-lg text-[#383EDE]'>Credentials Toevoegen</p>
                 </Link>
@@ -49,7 +49,7 @@ export default CardsOverview
 
 const Card = ({ data }) => {
 
-    return <Link href={`/cards/info/${data?.id}`} className='relative w-full bg-[#F1F5FF] aspect-video rounded-2xl p-6 flex flex-col justify-between'>
+    return <Link href={`/cards/info/${data?.id}`} className='relative w-full bg-[#F1F5FF] aspect-video rounded-2xl p-6 flex flex-col justify-between hover:scale-[1.01] duration-100'>
         <div className='flex flex-col'>
             <div className='flex flex-row justify-between items-start'>
                 <p className='font-bold text-lg text-[#152A62]'>{data.parsedDocument.issuer.name}</p>

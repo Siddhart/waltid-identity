@@ -42,7 +42,7 @@ const NavBar = () => {
         }} className="h-full p-4 overflow-hidden" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div className="bg-white w-full h-full rounded-2xl flex flex-col justify-between">
                 {/* <div className="w-20 h-20 p-4 flex items-center justify-center"> */}
-                <div className='relative flex flex-row items-center w-full overflow-hidden'>
+                <Link href="/" className='relative flex flex-row items-center w-full overflow-hidden'>
                     <div style={{
                         justifyContent: isHovering ? "start" : "center",
 
@@ -55,7 +55,7 @@ const NavBar = () => {
                         <p className='font-semibold z-10 whitespace-nowrap'>NL wallet</p>
                         <p className=' z-10 whitespace-nowrap font-black text-xs -mt-1'>Business</p>
                     </div>
-                </div>
+                </Link>
                 {/* </div> */}
 
                 <div className="flex flex-col gap-0 w-full">
