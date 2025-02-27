@@ -97,7 +97,7 @@ const Button = ({ svg, route, tooltip, isHovering }) => {
 
 
     useEffect(() => {
-        if (router.route === route) {
+        if (router.route === route || router.route.startsWith(route + '/')) {
             setSelected(true);
         } else {
             setSelected(false);
