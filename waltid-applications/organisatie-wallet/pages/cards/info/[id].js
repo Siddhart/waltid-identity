@@ -70,24 +70,13 @@ const CardInfo = () => {
         <div className='absolute bottom-0 w-full h-fit p-4 max-w-[350px] '>
           <button className='border-2 bg-[#AB0065] w-full h-full flex items-center justify-center gap-3 py-3 rounded-2xl'>
             <DeleteSvg />
-            <p className='text-white text-base'>Kaart Verwijderen</p>
+            <p className='text-white text-base font-bold'>Kaart Verwijderen</p>
           </button>
         </div>
       </div>
 
       <div className='flex flex-1 flex-col justify-between w-full h-full gap-6'>
-        <div className='flex flex-col flex-1 w-full h-full '>
-          <div className='w-full h-fit bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-2xl'>
-            <p>Recente Activiteiten</p>
-          </div>
-
-          <div className='flex flex-col gap-6 p-4 w-full bg-[#F5F4F9] rounded-b-2xl overflow-scroll h-[60vh]'>
-            <DayBlock />
-            <DayBlock />
-          </div>
-        </div>
-
-        <div className='w-full h-36 bg-[#F5F4F9] rounded-2xl'>
+      <div className='w-full h-36 bg-[#F5F4F9] rounded-2xl'>
           <div className='w-full h-16 bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-2xl'>
             <p>Toegang Wijzigen</p>
           </div>
@@ -99,6 +88,18 @@ const CardInfo = () => {
             <AccessButton value="HR" selected={false} />
           </div>
         </div>
+        <div className='flex flex-col flex-1 w-full h-full '>
+          <div className='w-full h-fit bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-2xl'>
+            <p>Recente Activiteiten</p>
+          </div>
+
+          <div className='flex flex-col gap-6 p-4 w-full bg-[#F5F4F9] rounded-b-2xl overflow-scroll h-[60vh]'>
+            <DayBlock />
+            <DayBlock />
+          </div>
+        </div>
+
+       
       </div>
     </div>
   )
