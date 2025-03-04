@@ -11,8 +11,10 @@ import DayBlock from '@/components/card-info/DayBlock'
 import CardEvent from '@/components/card-info/CardEvent'
 
 //helpers
-import { getCredentialData } from '@/helpers/credentials'
+import { deleteCredential, getCredentialData } from '@/helpers/credentials'
 import CredentialCard from '@/components/global/CredentialCard'
+import Popup from '@/components/global/Popup'
+import DeleteCredentialPopupContent from '@/components/popups/deleteCredential'
 
 const CardInfo = () => {
   const router = useRouter()
@@ -20,11 +22,14 @@ const CardInfo = () => {
 
   const [credential, setCredential] = useState(null)
 
+  const [deleteCredentialPopup, setDeleteCredentialPopup] = useState(false)
+
   useEffect(() => {
     const fetchCredentialData = async () => {
       let credentialDataResponse = await getCredentialData(id)
+
       setCredential(credentialDataResponse)
-      console.log(credentialDataResponse);
+      // console.log(credentialDataResponse);
     }
 
     if (id) fetchCredentialData()
@@ -32,6 +37,9 @@ const CardInfo = () => {
 
   return (
     <div className='relative w-full flex flex-row gap-6 overflow-hidden'>
+
+      {deleteCredentialPopup && <Popup setPopup={setDeleteCredentialPopup} title={"Credential Verwijderen"} content={<DeleteCredentialPopupContent urn={id} />}></Popup>}
+
       <div className='flex flex-col h-screen flex-1 max-w-[350px] rounded-t-md bg-[#F5F4F9]'>
         <div className='sticky top-0'>
           <div className=' max-w-[350px] bg-[#383EDE] p-4 text-white text-3xl font-bold  flex items-center justify-between rounded-t-md'>
@@ -50,6 +58,8 @@ const CardInfo = () => {
             <div className='flex flex-col gap-6 p-4'>
               {credential?.parsedDocument?.credentialSubject && Object.keys(credential?.parsedDocument?.credentialSubject)?.map((key, i) => {
                 let keyObj = [key, credential?.parsedDocument?.credentialSubject[key]]
+                if (credential?.parsedDocument?.credentialSubject[key].length == undefined) return
+
                 return <KeyValue title={key} value={keyObj[1]} />
               })}
             </div>
@@ -66,7 +76,7 @@ const CardInfo = () => {
 
 
         <div className='absolute bottom-0 w-full h-fit p-4 max-w-[350px] '>
-          <button className='border-2 bg-[#AB0065] w-full h-full flex items-center justify-center gap-3 py-3 rounded-2xl'>
+          <button onClick={() => setDeleteCredentialPopup(true)} className='border-2 bg-[#AB0065] w-full h-full flex items-center justify-center gap-3 py-3 rounded-2xl'>
             <DeleteSvg />
             <p className='text-white text-base font-bold'>Kaart Verwijderen</p>
           </button>
