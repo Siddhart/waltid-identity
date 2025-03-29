@@ -2,9 +2,10 @@
 
 package id.walt.issuer.issuance
 
-import COSE.AlgorithmID
-import COSE.OneKey
+import org.cose.java.AlgorithmID
+import org.cose.java.OneKey
 import cbor.Cbor
+import com.nimbusds.jose.jwk.ECKey
 import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.X509CertUtils
 import id.walt.commons.config.ConfigManager
@@ -153,9 +154,9 @@ open class CIProvider(
     }
 
 
-    fun putSession(id: String, session: IssuanceSession) {
+    fun putSession(id: String, session: IssuanceSession, ttl: Duration? = null) {
         log.debug { "SETTING CI AUTH SESSION: $id = $session" }
-        authSessions[id] = session
+        authSessions.set(id, session, ttl)
     }
 
     fun removeSession(id: String) {
@@ -266,18 +267,36 @@ open class CIProvider(
         }))
     }
 
+    private suspend fun extractHolderKey(proof: ProofOfPossession): COSECryptoProviderKeyInfo? {
+        when(proof.proofType) {
+            ProofType.cwt -> {
+                return proof.cwt?.base64UrlDecode()?.let {
+                    COSESign1Utils.extractHolderKey(Cbor.decodeFromByteArray<COSESign1>(it))
+                }
+            }
+            else -> {
+                return proof.jwt?.let { JwtUtils.parseJWTHeader(it) }?.get(JWTClaims.Header.jwk)?.jsonObject?.let {
+                    JWKKey.importJWK(it.toString()).getOrNull()?.let { key ->
+                        COSECryptoProviderKeyInfo(
+                            key.getKeyId(),
+                            AlgorithmID.ECDSA_256,
+                            ECKey.parse(key.exportJWK()).toECPublicKey(),
+                            null
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     @OptIn(ExperimentalSerializationApi::class)
     private suspend fun doGenerateMDoc(
         credentialRequest: CredentialRequest,
         issuanceSession: IssuanceSession
     ): CredentialResult {
-        val coseSign1 = Cbor.decodeFromByteArray<COSESign1>(
-            credentialRequest.proof?.cwt?.base64UrlDecode() ?: throw CredentialError(
-                credentialRequest,
-                CredentialErrorCode.invalid_or_missing_proof, message = "No CWT proof found on credential request"
-            )
-        )
-        val holderKey = COSESign1Utils.extractHolderKey(coseSign1)
+        val proof = credentialRequest.proof ?: throw CredentialError(credentialRequest, CredentialErrorCode.invalid_or_missing_proof, message = "No proof found on credential request")
+        val holderKey = extractHolderKey(proof) ?: throw CredentialError(credentialRequest, CredentialErrorCode.invalid_or_missing_proof, message = "No holder key could be extracted from proof")
+
         val nonce = OpenID4VCI.getNonceFromProof(credentialRequest.proof!!) ?: throw CredentialError(
             credentialRequest,
             CredentialErrorCode.invalid_or_missing_proof,
@@ -425,10 +444,20 @@ open class CIProvider(
     }
 
     private fun generateProofOfPossessionNonceFor(session: IssuanceSession): IssuanceSession {
+        // Calculate remaining TTL based on session expiration
+        val remainingTtl = session.expirationTimestamp?.let {
+            val now = Clock.System.now()
+            if (it > now) {
+                it - now  // Calculate duration between now and expiration
+            } else {
+                null  // Already expired
+            }
+        }
+        
         return session.copy(
             cNonce = randomUUID()
         ).also {
-            putSession(it.id, it)
+            putSession(it.id, it, remainingTtl)
         }
     }
 
@@ -477,7 +506,7 @@ open class CIProvider(
             val updatedSession = IssuanceSession(
                 id = it.id,
                 authorizationRequest = authorizationRequest,
-                expirationTimestamp = Clock.System.now().plus(5.minutes),
+                expirationTimestamp = Clock.System.now().plus(expiresIn),
                 issuanceRequests = it.issuanceRequests,
                 authServerState = authServerState,
                 txCode = it.txCode,
@@ -487,7 +516,7 @@ open class CIProvider(
                 callbackUrl = it.callbackUrl,
                 customParameters = it.customParameters
             )
-            putSession(it.id, updatedSession)
+            putSession(it.id, updatedSession, expiresIn)
         }
     }
 
@@ -525,7 +554,7 @@ open class CIProvider(
             credentialOffer = credentialOfferBuilder.build(),
             callbackUrl = callbackUrl
         ).also {
-            putSession(it.id, it)
+            putSession(it.id, it, expiresIn)
         }
     }
 
@@ -548,12 +577,28 @@ open class CIProvider(
     fun generateCredentialResponse(credentialRequest: CredentialRequest, session: IssuanceSession): CredentialResponse = runBlocking {
         // access_token should be validated on API level and issuance session extracted
         // Validate credential request (proof of possession, etc)
-        val nonce = session.cNonce ?: throw CredentialError(credentialRequest, CredentialErrorCode.invalid_or_missing_proof, message = "No cNonce found on current issuance session")
-        val validationResult = OpenID4VCI.validateCredentialRequest(credentialRequest, nonce, metadata)
-        if(!validationResult.success)
-            throw CredentialError(credentialRequest, CredentialErrorCode.invalid_request, message = validationResult.message)
+        val nonce = session.cNonce
+            ?: throw CredentialError(
+                credentialRequest = credentialRequest,
+                errorCode = CredentialErrorCode.invalid_or_missing_proof,
+                message = "No cNonce found on current issuance session"
+            )
+
+        val validationResult = OpenID4VCI.validateCredentialRequest(
+            credentialRequest = credentialRequest,
+            nonce = nonce,
+            openIDProviderMetadata = metadata
+        )
+
+        if(!validationResult.success) throw CredentialError(
+            credentialRequest = credentialRequest,
+            errorCode = CredentialErrorCode.invalid_request,
+            message = validationResult.message
+        )
+
         // create credential result
         val credentialResult = generateCredential(credentialRequest, session)
+
         return@runBlocking createCredentialResponseFor(credentialResult, session)
     }
 
@@ -574,27 +619,43 @@ open class CIProvider(
     }
 
     fun processTokenRequest(tokenRequest: TokenRequest): TokenResponse = runBlocking {
-        val payload = OpenID4VC.validateAndParseTokenRequest(tokenRequest, metadata.issuer!!, CI_TOKEN_KEY) ?: throw TokenError(tokenRequest, TokenErrorCode.invalid_request, "Token request could not be validated")
+        val payload = OpenID4VC.validateAndParseTokenRequest(
+            tokenRequest = tokenRequest,
+            issuer = metadata.issuer!!,
+            tokenKey = CI_TOKEN_KEY
+        )
+
         val sessionId = payload[JWTClaims.Payload.subject]?.jsonPrimitive?.content ?: throw TokenError(tokenRequest, TokenErrorCode.invalid_request, "Token contains no session ID in subject")
+
         val session = getVerifiedSession(sessionId) ?: throw TokenError(
             tokenRequest = tokenRequest,
             errorCode = TokenErrorCode.invalid_request,
             message = "No authorization session found for given authorization code, or session expired."
         )
-        if (tokenRequest.grantType == GrantType.pre_authorized_code && session.txCode != null &&
+
+        if (tokenRequest is TokenRequest.PreAuthorizedCode &&
+            session.txCode != null &&
             session.txCodeValue != tokenRequest.txCode
         ) {
             throw TokenError(
-                tokenRequest,
-                TokenErrorCode.invalid_grant,
+                tokenRequest = tokenRequest,
+                errorCode = TokenErrorCode.invalid_grant,
                 message = "User PIN required for this issuance session has not been provided or PIN is wrong."
             )
         }
+
         // Expiration time required by EBSI
         val currentTime = Clock.System.now().epochSeconds
         val expirationTime = (currentTime + 864000L) // ten days in milliseconds
+
         return@runBlocking TokenResponse.success(
-            OpenID4VC.generateToken(sessionId, metadata.issuer!!, TokenTarget.ACCESS, null, CI_TOKEN_KEY),
+            accessToken = OpenID4VC.generateToken(
+                    sub = sessionId,
+                    issuer = metadata.issuer!!,
+                    audience = TokenTarget.ACCESS,
+                    tokenId = null,
+                    tokenKey = CI_TOKEN_KEY
+            ),
             tokenType = "bearer",
             expiresIn = expirationTime,
             cNonce = generateProofOfPossessionNonceFor(session).cNonce,
@@ -602,9 +663,14 @@ open class CIProvider(
             state = session.authorizationRequest?.state
         ).also {
             if(!session.callbackUrl.isNullOrEmpty())
-                sendCallback(sessionId, "requested_token", buildJsonObject {
-                    put("request", Json.encodeToJsonElement(session.issuanceRequests.first()))
-                }, session.callbackUrl)
+                sendCallback(
+                    sessionId = sessionId,
+                    type = "requested_token",
+                    data = buildJsonObject {
+                        put("request", Json.encodeToJsonElement(session.issuanceRequests.first()))
+                    },
+                    callbackUrl = session.callbackUrl
+                )
         }
     }
 

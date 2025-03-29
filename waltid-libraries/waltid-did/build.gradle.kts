@@ -59,7 +59,7 @@ kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_15 // JVM got Ed25519 at version 15
         }
-        withJava()
+
         tasks.withType<Test>().configureEach {
             useJUnitPlatform()
         }
@@ -151,7 +151,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-test-host:$ktor_version")
                 implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
                 implementation("io.ktor:ktor-server-netty:$ktor_version")
-                implementation("io.ktor:ktor-network-tls-certificates:$ktor_version")
+                implementation("io.ktor:ktor-network-tls-certificates:${ktor_version}")
             }
         }
         val jsMain by getting {

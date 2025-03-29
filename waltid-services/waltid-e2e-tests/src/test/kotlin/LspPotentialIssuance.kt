@@ -1,5 +1,5 @@
-import COSE.AlgorithmID
-import COSE.OneKey
+import org.cose.java.AlgorithmID
+import org.cose.java.OneKey
 import cbor.Cbor
 import com.nimbusds.jose.jwk.ECKey
 import id.walt.commons.interop.LspPotentialInterop
@@ -134,10 +134,11 @@ class LspPotentialIssuance(val client: HttpClient) {
         val tokenResp = client.submitForm(
             oauthMetadata.tokenEndpoint!!,
             parametersOf(
-                TokenRequest(
-                    GrantType.authorization_code, authReq.clientId,
-                    authReq.redirectUri, location.parameters["code"]!!,
-                    codeVerifier = codeVerifier
+                TokenRequest.AuthorizationCode(
+                    clientId = authReq.clientId,
+                    codeVerifier = codeVerifier,
+                    redirectUri = authReq.redirectUri,
+                    code = location.parameters["code"]!!,
                 ).toHttpParameters()
             )
         ).let { TokenResponse.fromJSON(it.body<JsonObject>()) }
@@ -320,10 +321,11 @@ class LspPotentialIssuance(val client: HttpClient) {
         val tokenResp = client.submitForm(
             oauthMetadata.tokenEndpoint!!,
             parametersOf(
-                TokenRequest(
-                    GrantType.authorization_code, authReq.clientId,
-                    authReq.redirectUri, location.parameters["code"]!!,
-                    codeVerifier = codeVerifier
+                TokenRequest.AuthorizationCode(
+                    clientId = authReq.clientId,
+                    codeVerifier = codeVerifier,
+                    redirectUri = authReq.redirectUri,
+                    code = location.parameters["code"]!!,
                 ).toHttpParameters()
             )
         ).let { TokenResponse.fromJSON(it.body<JsonObject>()) }
