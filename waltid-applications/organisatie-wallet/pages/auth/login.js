@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 //components
 import LoginStep from '@/components/auth/LoginStep'
-import WelcomeStep from '@/components/auth/WelcomeStep'
+import WelcomeStep from '@/components/auth/welcomeStep'
 
 const Login = () => {
     const [step, setStep] = useState(0)
