@@ -3,7 +3,7 @@ services:
     build:
       context: ../waltid-applications/organisatie-wallet
     ports:
-      - "3001:3000" # or $ORG_WALLET_PORT:3000 if using env
+      - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: "http://localhost:$WALLET_BACKEND_PORT"
     depends_on:
