@@ -1,16 +1,16 @@
 services:
-  organisatie-wallet:
-    build:
-      context: ../waltid-applications/organisatie-wallet
-    ports:
-      - "3000:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: "http://localhost:$WALLET_BACKEND_PORT"
-    depends_on:
-      - wallet-api
-    profiles:
-      - identity
-      - all
+  # organisatie-wallet:
+  #   build:
+  #     context: ../waltid-applications/organisatie-wallet
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     NEXT_PUBLIC_API_URL: "http://localhost:$WALLET_BACKEND_PORT"
+  #   depends_on:
+  #     - wallet-api
+  #   profiles:
+  #     - identity
+  #     - all
   wallet-api:
     platform: linux/x86_64
     image: docker.io/waltid/wallet-api:${VERSION_TAG:-latest}
