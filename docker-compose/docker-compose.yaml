@@ -73,7 +73,7 @@ services:
     volumes:
       - ./verifier-api/config:/waltid-verifier-api/config
     environment:
-      OPA_SERVER_URL: "http://opa-server:8181"
+      OPA_SERVER_URL: "https://opa.businesswallet.eu/"
 
   waltid-demo-wallet:
     platform: linux/x86_64
@@ -90,8 +90,8 @@ services:
       - wallet-api
       - caddy
     environment:
-      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "http://localhost:$DEMO_WALLET_FRONTEND_PORT"
-      NUXT_PUBLIC_DEV_WALLET_URL: "http://localhost:$DEV_WALLET_FRONTEND_PORT"
+      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://dev-wallet.businesswallet.eu/"
+      NUXT_PUBLIC_DEV_WALLET_URL: "https://wallet.businesswallet.eu/"
       PORT: $DEMO_WALLET_FRONTEND_PORT
 
   waltid-dev-wallet:
@@ -109,8 +109,8 @@ services:
       - wallet-api
       - caddy
     environment:
-      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "http://localhost:$DEV_WALLET_FRONTEND_PORT"
-      NUXT_PUBLIC_DEMO_WALLET_URL: "http://localhost:$DEMO_WALLET_FRONTEND_PORT"
+      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://issuer.businesswallet.eu/"
+      NUXT_PUBLIC_DEMO_WALLET_URL: "https://dev-wallet.businesswallet.eu/"
       PORT: $DEV_WALLET_FRONTEND_PORT
 
   web-portal:
