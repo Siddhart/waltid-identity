@@ -11,6 +11,7 @@ import OverheidSvg from '@/assets/overheidSvg'
 
 //packages
 import Cookies from 'universal-cookie'
+import { loginWithEmailAndPassword } from '@/helpers/auth'
 
 const LoginStep = ({ setStep }) => {
     const cookies = new Cookies(null, { path: '/' });
@@ -23,28 +24,8 @@ const LoginStep = ({ setStep }) => {
         if (!userName || !password) return
 
         try {
-            const response = await fetch("http://localhost:7101/wallet-api/auth/login", {
-                "headers": {
-                    "accept": "application/json",
-                    "content-type": "application/json",
-                    "sec-ch-ua": "\"Not(A:Brand\";v=\"99\", \"Google Chrome\";v=\"133\", \"Chromium\";v=\"133\"",
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": "\"macOS\""
-                },
-                "referrer": "http://localhost:7101/login",
-                "referrerPolicy": "strict-origin-when-cross-origin",
-                "body": JSON.stringify({
-                    email: userName,
-                    password: password,
-                    type: "email"
-                }),
-                "method": "POST",
-                "mode": "cors",
-                "credentials": "omit"
-            });
-
-            const data = await response.json();
-
+            const data = await loginWithEmailAndPassword(userName, password);
+            
             if (data) {
                 const sessionData = JSON.stringify(data);
                 cookies.set("session", sessionData)

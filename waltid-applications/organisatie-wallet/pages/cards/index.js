@@ -33,7 +33,7 @@ const CardsOverview = () => {
     }, [])
 
     const filteredCards = cards.filter(card => {
-        const matchesSearch = card?.parsedDocument?.issuer?.name.toLowerCase().includes(search.toLowerCase())
+        const matchesSearch = card?.parsedDocument?.issuer?.name?.toLowerCase()?.includes(search.toLowerCase())
         const matchesFilter = filter === 'all' || card?.parsedDocument?.type[card?.parsedDocument?.type?.length - 1].toLowerCase() === filter.toLowerCase()
         return matchesSearch && matchesFilter
     })
