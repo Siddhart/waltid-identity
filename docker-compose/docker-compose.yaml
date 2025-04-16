@@ -1,16 +1,16 @@
 services:
-  organisatie-wallet:
-    build:
-      context: ../waltid-applications/organisatie-wallet
-    ports:
-      - "3000:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: "http://localhost:$WALLET_BACKEND_PORT"
-    depends_on:
-      - wallet-api
-    profiles:
-      - identity
-      - all
+  # organisatie-wallet:
+  #   build:
+  #     context: ../waltid-applications/organisatie-wallet
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     NEXT_PUBLIC_API_URL: "http://localhost:$WALLET_BACKEND_PORT"
+  #   depends_on:
+  #     - wallet-api
+  #   profiles:
+  #     - identity
+  #     - all
   wallet-api:
     platform: linux/x86_64
     image: docker.io/waltid/wallet-api:${VERSION_TAG:-latest}
@@ -127,10 +127,10 @@ services:
     depends_on:
       - caddy
     environment:
-      NEXT_PUBLIC_VC_REPO: "http://localhost:$VC_REPO_PORT"
-      NEXT_PUBLIC_ISSUER: "http://localhost:$ISSUER_API_PORT"
-      NEXT_PUBLIC_VERIFIER: "http://host.docker.internal:$VERIFIER_API_PORT"
-      NEXT_PUBLIC_WALLET: "http://host.docker.internal:$DEMO_WALLET_FRONTEND_PORT"
+      NEXT_PUBLIC_VC_REPO: "https://vc-repo.businesswallet.eu"
+      NEXT_PUBLIC_ISSUER: "https://issuer.businesswallet.eu"
+      NEXT_PUBLIC_VERIFIER: "https://verifier.businesswallet.eu"
+      NEXT_PUBLIC_WALLET: "https://wallet.businesswallet.eu"
       PORT: $WEB_PORTAL_PORT
 
   vc-repo:

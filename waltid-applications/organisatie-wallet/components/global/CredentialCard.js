@@ -1,47 +1,57 @@
-import RightArrowSvg from '@/assets/icons/rightArrowSvg'
 import React from 'react'
 import Link from 'next/link'
 import moment from 'moment';
-import OrganisatieSvg from '@/assets/icons/OrganisatieSvg';
-import CardSvg from '@/assets/icons/CardSvg';
+import { HiArrowRight, HiBuildingOffice2, HiDocument } from 'react-icons/hi2'
 
 const CredentialCard = ({ data, showBorder = false, shouldLink = true }) => {
     const cardContent = (
-        <div className='relative w-full bg-[#F1F5FF] h-full rounded-2xl flex flex-col justify-between'>
-            <div className='flex flex-col'>
+        <div className='relative w-full bg-gray-50 h-full rounded-xl flex flex-col justify-between p-6 shadow-sm hover:shadow-md transition-shadow'>
+            <div className='flex flex-col gap-4'>
                 <div className='flex flex-row justify-between items-start'>
-                    <p className='font-bold text-lg text-[#152A62]'>{data?.parsedDocument?.issuer?.name}</p>
-                    <div className='w-8 h-8 rounded-md border-[1px] border-black overflow-hidden'>
-                        {data?.parsedDocument?.issuer?.image?.id && <img src={data?.parsedDocument?.issuer?.image?.id} className='w-full h-full' />}
-                        {!data?.parsedDocument?.issuer?.image?.id && <span className='w-full h-full flex items-center justify-center'>
-                            <CardSvg width={20} height={20} />
-                        </span>}
+                    <div className='flex flex-col gap-1'>
+                        <p className='font-bold text-lg text-gray-900'>{data?.parsedDocument?.issuer?.name}</p>
+                        <p className='text-sm text-gray-500'>{data?.parsedDocument?.type[data?.parsedDocument?.type?.length - 1]}</p>
+                    </div>
+                    <div className='w-10 h-10 rounded-lg bg-white flex items-center justify-center overflow-hidden'>
+                        {data?.parsedDocument?.issuer?.image?.id ? (
+                            <img src={data?.parsedDocument?.issuer?.image?.id} className='w-full h-full object-cover' alt="Issuer logo" />
+                        ) : (
+                            <HiBuildingOffice2 className="w-6 h-6 text-[#383EDE]" />
+                        )}
                     </div>
                 </div>
-                <p className='text-[#152A62]'>{data?.parsedDocument?.type[data?.parsedDocument?.type?.length - 1]}</p>
+                
+                {!shouldLink && (
+                    <div className='flex flex-col gap-2 mt-4'>
+                        <div className='flex items-center gap-2 text-sm text-gray-500'>
+                            <HiDocument className="w-4 h-4" />
+                            <span>Issuance Date</span>
+                        </div>
+                        <p className='text-base font-medium text-gray-900'>
+                            {moment(new Date(data?.parsedDocument?.issuanceDate)).format("DD MMMM YYYY")}
+                        </p>
+                    </div>
+                )}
             </div>
-            {shouldLink && <div className='flex flex-row gap-2 items-center'>
-                <p className='font-bold text-[#152A62]'>Bekijk</p>
-                <RightArrowSvg color='#152A62' />
-            </div>}
 
-            {!shouldLink && <div>
-                <p className='text-sm break-all capitalize'>Issuance Date</p>
-                <p className='text-base font-bold'>{moment(new Date(data?.parsedDocument?.issuanceDate)).format("DD MMMM YYYY")}</p>
-            </div>}
+            {shouldLink && (
+                <div className='flex items-center justify-between mt-6 pt-4 border-t border-gray-100'>
+                    <span className='text-sm font-medium text-[#383EDE]'>View Details</span>
+                    <HiArrowRight className="w-5 h-5 text-[#383EDE]" />
+                </div>
+            )}
         </div>
     );
 
     return shouldLink ? (
-        <Link style={{
-            border: showBorder ? "1px solid black" : ""
-        }} href={`/cards/info/${data?.id}`} className={'relative w-full bg-[#F1F5FF] aspect-video rounded-2xl p-6 flex flex-col justify-between hover:scale-[1.01] duration-100'}>
+        <Link 
+            href={`/cards/info/${data?.id}`} 
+            className={`relative w-full aspect-video rounded-xl overflow-hidden transition-transform hover:scale-[1.02] duration-200 ${showBorder ? 'border border-gray-200' : ''}`}
+        >
             {cardContent}
         </Link>
     ) : (
-        <div style={{
-            border: showBorder ? "1px solid black" : ""
-        }} className={'relative w-full bg-[#F1F5FF] aspect-video rounded-2xl p-6 flex flex-col justify-between'}>
+        <div className={`relative w-full aspect-video rounded-xl overflow-hidden ${showBorder ? 'border border-gray-200' : ''}`}>
             {cardContent}
         </div>
     )

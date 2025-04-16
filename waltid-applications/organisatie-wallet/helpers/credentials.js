@@ -1,11 +1,13 @@
 import Cookies from "universal-cookie";
 
-async function getCredentials(wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9") {
+const NEXT_PUBLIC_API_HOST = process.env.NEXT_PUBLIC_API_HOST;
+
+async function getCredentials(wallet_id = "2eeb7e87-c409-4a4f-a9eb-09ada74ad51d") {
     const cookies = new Cookies();
     const { token } = cookies.get("session");
 
     try {
-        const response = await fetch(`http://localhost:7101/wallet-api/wallet/${wallet_id}/credentials?showDeleted=false&showPending=false`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_HOST}/wallet-api/wallet/${wallet_id}/credentials?showDeleted=false&showPending=false`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -19,12 +21,12 @@ async function getCredentials(wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9"
     }
 }
 
-async function getCredentialData(credential_id, wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9") {
+async function getCredentialData(credential_id, wallet_id = "2eeb7e87-c409-4a4f-a9eb-09ada74ad51d") {
     const cookies = new Cookies();
     const { token } = cookies.get("session");
 
     try {
-        const response = await fetch(`http://localhost:7101/wallet-api/wallet/${wallet_id}/credentials/${credential_id}`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_HOST}/wallet-api/wallet/${wallet_id}/credentials/${credential_id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -40,12 +42,12 @@ async function getCredentialData(credential_id, wallet_id = "7999978a-eff4-4eed-
     }
 }
 
-async function resolveCredential(openIdCredentialOffer, wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9") {
+async function resolveCredential(openIdCredentialOffer, wallet_id = "2eeb7e87-c409-4a4f-a9eb-09ada74ad51d") {
     const cookies = new Cookies();
     const { token } = cookies.get("session");
 
     try {
-        const response = await fetch(`http://localhost:7101/wallet-api/wallet/${wallet_id}/exchange/resolveCredentialOffer`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_HOST}/wallet-api/wallet/${wallet_id}/exchange/resolveCredentialOffer`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -66,7 +68,7 @@ async function getIssuerMetadata(issuer) {
     const { token } = cookies.get("session");
 
     try {
-        const response = await fetch(`http://localhost:7101/wallet-api/wallet/7999978a-eff4-4eed-9771-c2b57495c3e9/exchange/resolveIssuerOpenIDMetadata?issuer=${issuer}`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_HOST}/wallet-api/wallet/2eeb7e87-c409-4a4f-a9eb-09ada74ad51d/exchange/resolveIssuerOpenIDMetadata?issuer=${issuer}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -80,12 +82,12 @@ async function getIssuerMetadata(issuer) {
     }
 }
 
-async function addCredential(did, openIdCredentialOffer, wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9") {
+async function addCredential(did, openIdCredentialOffer, wallet_id = "2eeb7e87-c409-4a4f-a9eb-09ada74ad51d") {
     const cookies = new Cookies();
     const { token } = cookies.get("session");
 
     try {
-        const response = await fetch(`http://localhost:7101/wallet-api/wallet/${wallet_id}/exchange/useOfferRequest?did=${did}`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_HOST}/wallet-api/wallet/${wallet_id}/exchange/useOfferRequest?did=${did}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -101,12 +103,12 @@ async function addCredential(did, openIdCredentialOffer, wallet_id = "7999978a-e
     }
 }
 
-async function getDid(wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9") {
+async function getDid(wallet_id = "2eeb7e87-c409-4a4f-a9eb-09ada74ad51d") {
     const cookies = new Cookies();
     const { token } = cookies.get("session");
 
     try {
-        const response = await fetch(`http://localhost:7101/wallet-api/wallet/${wallet_id}/dids`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_HOST}/wallet-api/wallet/${wallet_id}/dids`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -120,12 +122,12 @@ async function getDid(wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9") {
     }
 }
 
-async function deleteCredential(urn, wallet_id = "7999978a-eff4-4eed-9771-c2b57495c3e9") {
+async function deleteCredential(urn, wallet_id = "2eeb7e87-c409-4a4f-a9eb-09ada74ad51d") {
     const cookies = new Cookies();
     const { token } = cookies.get("session");
 
     try {
-        const response = await fetch(`http://localhost:7101/wallet-api/wallet/${wallet_id}/credentials/${urn}`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_HOST}/wallet-api/wallet/${wallet_id}/credentials/${urn}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,
