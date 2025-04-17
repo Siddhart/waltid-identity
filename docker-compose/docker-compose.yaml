@@ -1,16 +1,4 @@
 services:
-  organisatie-wallet:
-    build:
-      context: ../waltid-applications/organisatie-wallet
-    ports:
-      - "3001:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: "http://localhost:$WALLET_BACKEND_PORT"
-    depends_on:
-      - wallet-api
-    profiles:
-      - identity
-      - all
   wallet-api:
     platform: linux/x86_64
     image: docker.io/waltid/wallet-api:${VERSION_TAG:-latest}
@@ -73,7 +61,7 @@ services:
     volumes:
       - ./verifier-api/config:/waltid-verifier-api/config
     environment:
-      OPA_SERVER_URL: "http://opa-server:8181"
+      OPA_SERVER_URL: "https://opa.businesswallet.eu"
 
   waltid-demo-wallet:
     platform: linux/x86_64
@@ -90,8 +78,8 @@ services:
       - wallet-api
       - caddy
     environment:
-      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "http://localhost:$DEMO_WALLET_FRONTEND_PORT"
-      NUXT_PUBLIC_DEV_WALLET_URL: "http://localhost:$DEV_WALLET_FRONTEND_PORT"
+      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://waltid.businesswallet.eu"
+      NUXT_PUBLIC_DEV_WALLET_URL: "https://waltid-dev.businesswallet.eu"
       PORT: $DEMO_WALLET_FRONTEND_PORT
 
   waltid-dev-wallet:
@@ -109,8 +97,8 @@ services:
       - wallet-api
       - caddy
     environment:
-      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "http://localhost:$DEV_WALLET_FRONTEND_PORT"
-      NUXT_PUBLIC_DEMO_WALLET_URL: "http://localhost:$DEMO_WALLET_FRONTEND_PORT"
+      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://waltid-dev.businesswallet.eu"
+      NUXT_PUBLIC_DEMO_WALLET_URL: "https://waltid.businesswallet.eu"
       PORT: $DEV_WALLET_FRONTEND_PORT
 
   web-portal:
@@ -127,10 +115,10 @@ services:
     depends_on:
       - caddy
     environment:
-      NEXT_PUBLIC_VC_REPO: "http://host.docker.internal:$VC_REPO_PORT"
-      NEXT_PUBLIC_ISSUER: "http://host.docker.internal:$ISSUER_API_PORT"
-      NEXT_PUBLIC_VERIFIER: "http://host.docker.internal:$VERIFIER_API_PORT"
-      NEXT_PUBLIC_WALLET: "http://host.docker.internal:$DEMO_WALLET_FRONTEND_PORT"
+      NEXT_PUBLIC_VC_REPO: "https://docs.businesswallet.eu"
+      NEXT_PUBLIC_ISSUER: "https://issuer.businesswallet.eu"
+      NEXT_PUBLIC_VERIFIER: "https://verifier.businesswallet.eu"
+      NEXT_PUBLIC_WALLET: "https://waltid.businesswallet.eu"
       PORT: $WEB_PORTAL_PORT
 
   vc-repo:
@@ -181,7 +169,7 @@ services:
       - "$VAULT_PORT:8200"
     environment:
       VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:$VAULT_PORT"
-      VAULT_ADDR: "http://127.0.0.1:$VAULT_PORT"
+      VAULT_ADDR: "https://vault.businesswallet.eu"
     command: server -config=/vault/config/config.hcl -dev -dev-root-token-id="dev-only-token"
     restart: always
 
