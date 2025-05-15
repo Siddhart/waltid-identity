@@ -61,7 +61,7 @@ services:
     volumes:
       - ./verifier-api/config:/waltid-verifier-api/config
     environment:
-      OPA_SERVER_URL: "https://opa.businesswallet.eu"
+      OPA_SERVER_URL: "https://opa.businesswallets.eu"
 
   waltid-demo-wallet:
     platform: linux/x86_64
@@ -78,8 +78,8 @@ services:
       - wallet-api
       - caddy
     environment:
-      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://waltid.businesswallet.eu"
-      NUXT_PUBLIC_DEV_WALLET_URL: "https://waltid-dev.businesswallet.eu"
+      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://waltid.businesswallets.eu"
+      NUXT_PUBLIC_DEV_WALLET_URL: "https://waltid-dev.businesswallets.eu"
       PORT: $DEMO_WALLET_FRONTEND_PORT
 
   waltid-dev-wallet:
@@ -97,8 +97,8 @@ services:
       - wallet-api
       - caddy
     environment:
-      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://waltid-dev.businesswallet.eu"
-      NUXT_PUBLIC_DEMO_WALLET_URL: "https://waltid.businesswallet.eu"
+      NUXT_PUBLIC_ISSUER_CALLBACK_URL: "https://waltid-dev.businesswallets.eu"
+      NUXT_PUBLIC_DEMO_WALLET_URL: "https://waltid.businesswallets.eu"
       PORT: $DEV_WALLET_FRONTEND_PORT
 
   web-portal:
@@ -115,10 +115,10 @@ services:
     depends_on:
       - caddy
     environment:
-      NEXT_PUBLIC_VC_REPO: "https://docs.businesswallet.eu"
-      NEXT_PUBLIC_ISSUER: "https://issuer.businesswallet.eu"
-      NEXT_PUBLIC_VERIFIER: "https://verifier.businesswallet.eu"
-      NEXT_PUBLIC_WALLET: "https://waltid.businesswallet.eu"
+      NEXT_PUBLIC_VC_REPO: "https://docs.businesswallets.eu"
+      NEXT_PUBLIC_ISSUER: "https://issuer.businesswallets.eu"
+      NEXT_PUBLIC_VERIFIER: "https://verifier.businesswallets.eu"
+      NEXT_PUBLIC_WALLET: "https://waltid.businesswallets.eu"
       PORT: $WEB_PORTAL_PORT
 
   vc-repo:
@@ -169,7 +169,7 @@ services:
       - "$VAULT_PORT:8200"
     environment:
       VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:$VAULT_PORT"
-      VAULT_ADDR: "https://vault.businesswallet.eu"
+      VAULT_ADDR: "https://vault.businesswallets.eu"
     command: server -config=/vault/config/config.hcl -dev -dev-root-token-id="dev-only-token"
     restart: always
 
